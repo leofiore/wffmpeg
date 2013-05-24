@@ -3,7 +3,7 @@ from wffmpeg.ffbase import FFVideoEffect, FFAudioEffect, FFmpeg
 class FFDocument(FFVideoEffect, FFAudioEffect):
     """
         audio/video document. A FFDocument describe a higer level action set
-        combining several FF[Audio|Video]Effect methods. 
+        combining several FF[Audio|Video]Effect methods.
     """
 
     def __init__(self, file, metadata=None, effects={}):
@@ -48,7 +48,7 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
         return FFDocument(self.__file__, self.__metadata__.copy(), self.__effects__.copy())
 
     def resample(self, width=0, height=0, vstream=0):
-        """ 
+        """
             adjust video dimensions. If one dimension
             is specified, the resampling is proportional
         """
@@ -60,7 +60,7 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
         elif not width and height:
             return
 
-        new = self.clone()
+        new = self.__clone__()
         if width < w:
             cropsize = (w - width)/2
             new.crop(0, 0, cropsize, cropsize)
@@ -75,11 +75,11 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
             new.pad(padsize, padsize, 0, 0)
         return new
 
-    def resize(self, width=0, height=0, vstream=0): 
-        """ 
+    def resize(self, width=0, height=0, vstream=0):
+        """
             resize video dimensions. If one dimension
             is specified, the resampling is proportional
-            
+
             width and height can be pixel or % (not mixable)
         """
         w, h = [int(i) for i in  self.__metadata__["video"][vstream]["size"][0].split("x")]
@@ -107,7 +107,7 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
         return new
 
     def split(self, time):
-        """ 
+        """
             return a tuple of FFDocument splitted at
             a specified time.
             allowed formats: %, sec, hh:mm:ss.mmm
@@ -119,14 +119,14 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
             sectime = sectime - self.seek()
         cut = self.__timereference__(sectime, time)
 
-        first = self.__clone__() 
+        first = self.__clone__()
         second = self.__clone__()
         first.duration(cut)
         second.seek(cut + 0.001)
         return first, second
 
     def ltrim(self, time):
-        """ 
+        """
             trim leftmost side (from start) of the clip
         """
         sectime = self.__timeparse__(self.__metadata__["duration"])
@@ -155,7 +155,7 @@ class FFDocument(FFVideoEffect, FFAudioEffect):
         new = self.__clone__()
         new.duration(trim)
         return new
-        
+
     def trim(self, left, right):
         """
             left and right trim (actually calls ltrim and rtrim)
